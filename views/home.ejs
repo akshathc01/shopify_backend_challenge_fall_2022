@@ -1,0 +1,28 @@
+<%- include("header") -%>
+
+  <div class="box" id="heading">
+    <h1> <%= listTitle %> </h1>
+  </div>
+
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Stock</th>
+      <th>Aisle</th>
+      <th>Location</th>
+    </tr>
+    
+    <%  productList.forEach(function(product){ %>
+      <tr>
+        <td><%=product.name%></td>
+        <td><%=product.stock%></td>
+        <td><%=product.aisle%></td>
+        <td><%=product.location%></td>
+      </tr>
+    <%  }) %>
+  </table>
+
+
+  
+
+<%- include("footer") -%>

@@ -12,43 +12,58 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost:27017/todolistDB", {useNewUrlParser: true});
+mongoose.connect("mongodb://localhost:27017/inventoryDB", {useNewUrlParser: true});
 
-const itemsSchema = {
-  name: String
-};
-
-const Item = mongoose.model("Item", itemsSchema);
-
-
-const item1 = new Item({
-  name: "Welcome to your todolist!"
-});
-
-const item2 = new Item({
-  name: "Hit the + button to add a new item."
-});
-
-const item3 = new Item({
-  name: "<-- Hit this to delete an item."
-});
-
-const defaultItems = [item1, item2, item3];
-
-const listSchema = {
+const productsSchema = {
   name: String,
-  items: [itemsSchema]
+  stock: Number,
+  deletion: {
+    deleted: Boolean,
+    comment: String
+  },
+  aisle: String,
+  location: String
 };
 
-const List = mongoose.model("List", listSchema);
+const Product = mongoose.model("Product", productsSchema);
 
+const product1 = new Product({
+  name: "Laptop",
+  stock: 20, 
+  deletion: {
+    deleted: false,
+    comment: ""
+  },
+  aisle: "15B",
+  location: "California"
+});
+
+const product2 = new Product({
+  name: "Shoes",
+  stock: 50, 
+  deletion: {
+    deleted: false,
+    comment: ""
+  },
+  aisle: "10",
+  location: "Toronto"
+});
+
+const defaultProducts = [product1, product2];
+
+const inventorySchema = {
+  name: String,
+  products: [productsSchema]
+};
+ 
+const Inventory = mongoose.model("Inventory", inventorySchema);
 
 app.get("/", function(req, res) {
 
-  Item.find({}, function(err, foundItems){
+  Product.find({}, function(err, foundProducts){
 
-    if (foundItems.length === 0) {
-      Item.insertMany(defaultItems, function(err){
+    if (foundProducts.length === 0) {
+      Product.insertMany(defaultProducts, function(err){
         if (err) {
           console.log(err);
         } else {
@@ -57,36 +72,33 @@ app.get("/", function(req, res) {
       });
       res.redirect("/");
     } else {
-      res.render("list", {listTitle: "Today", newListItems: foundItems});
+      res.render("home", {listTitle: "Inventory", productList: foundProducts});
     }
   });
 
 });
 
-app.get("/:customListName", function(req, res){
-  const customListName = _.capitalize(req.params.customListName);
+// app.get("/:customListName", function(req, res){
+//   const customListName = _.capitalize(req.params.customListName);
 
-  List.findOne({name: customListName}, function(err, foundList){
-    if (!err){
-      if (!foundList){
-        //Create a new list
-        const list = new List({
-          name: customListName,
-          items: defaultItems
-        });
-        list.save();
-        res.redirect("/" + customListName);
-      } else {
-        //Show an existing list
+//   List.findOne({name: customListName}, function(err, foundList){
+//     if (!err){
+//       if (!foundList){
+//         //Create a new list
+//         const list = new List({
+//           name: customListName,
+//           items: defaultProducts
+//         });
+//         list.save();
+//         res.redirect("/" + customListName);
+//       } else {
+//         //Show an existing list
 
-        res.render("list", {listTitle: foundList.name, newListItems: foundList.items});
-      }
-    }
-  });
-
-
-
-});
+//         res.render("list", {listTitle: foundList.name, newListItems: foundList.items});
+//       }
+//     }
+//   });
+// });
 
 app.post("/", function(req, res){
 
