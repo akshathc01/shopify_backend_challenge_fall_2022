@@ -72,6 +72,7 @@ app.get("/", function(req, res) {
       });
       res.redirect("/");
     } else {
+      // console.log(foundProducts)
       res.render("home", {listTitle: "Inventory", productList: foundProducts});
     }
   });
@@ -119,6 +120,44 @@ app.post("/", function(req, res){
       res.redirect("/" + listName);
     });
   }
+});
+
+app.post("/add", function(req, res){
+  const product = new Product({
+    name: req.body.productName,
+    stock: req.body.productStock,
+    deletion: {
+      deleted: false,
+      comment: ""
+    },
+    aisle: req.body.productAisle,
+    location: req.body.productLoc
+  });
+  Product.create(product, function(err){
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Successfully saved product to DB.");
+    }
+  });
+  res.redirect("/")
+});
+
+app.post("/edit", function(req, res){
+  Product.findOneAndUpdate({_id: req.body.productId},  {$set: {
+    name: req.body.productName,
+    stock: req.body.productStock,
+    aisle: req.body.productAisle,
+    location: req.body.productLoc 
+  }}, {useFindAndModify: false},
+  function(err, doc) {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log("Successfully updated product.")
+      res.redirect("/")
+    }
+  });
 });
 
 app.post("/delete", function(req, res){
