@@ -3,18 +3,17 @@
   <div class="box" id="heading">
     <h1> <%= listTitle %> </h1>
   </div>
-  
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProductModal">
-    Add Product
-  </button>
-  <a href="/trash">
+  <a href="/">
     <button>
-      trash
+      home
     </button>
   </a>
+  <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProductModal">
+    Add Product
+  </button> -->
   
   <!-- Add Product Modal -->
-  <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
+  <!-- <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -59,7 +58,7 @@
       </form>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <table class="table">
     <tr>
@@ -68,6 +67,7 @@
       <th>Stock</th>
       <th>Aisle</th>
       <th>Location</th>
+      <th>Deletion Comments</th>
       <th></th>
       <th></th>
     </tr>
@@ -79,12 +79,13 @@
         <td><%=product.stock%></td>
         <td><%=product.aisle%></td>
         <td><%=product.location%></td>
-        <td>
+        <td><%=product.deletion.comment%></td>
+        <!-- <td>
           <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editProductModal_<%=product._id%>">
             Edit Product
-          </button>
+          </button> -->
           <!-- Edit Product Modal -->
-          <div class="modal fade" id="editProductModal_<%=product._id%>" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
+          <!-- <div class="modal fade" id="editProductModal_<%=product._id%>" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
@@ -131,34 +132,36 @@
               </div>
             </div>
           </div>
+        </td> -->
+        <td>
+          <form action="/recover" method="post">
+            <input name="productId" type="hidden" value="<%=product.id%>">
+            <button type="submit" class="btn btn-primary">
+              Recover
+            </button>
+          </form>
         </td>
         <td>
           <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteProductModal_<%=product._id%>">
-            Delete Product
+            Permanently Delete
           </button>
           <div class="modal fade" id="deleteProductModal_<%=product._id%>" tabindex="-1" role="dialog" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="deleteProductModalLabel">Delete Product</h5>
+                  <h5 class="modal-title" id="deleteProductModalLabel">Permanently Delete Product</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
                 <div class="modal-body">
-                  Would you like to add deletion comments before you delete <%=product.name%>?
-                  <form action="/delete" method="post">
+                  This action cannot be undone. Are you sure you want to permanently delete this product?
+                  <form action="/permdelete" method="post">
                     <input name="productId" type="hidden" value="<%=product.id%>">
-                    <div class="form-group row">
-                      <!-- <label for="deleteProductName" class="col-sm-2 col-form-label">Comment</label> -->
-                      <div class="col-sm-10">
-                        <input name="comment" type="text" class="form-control" id="deleteProductComment" placeholder="Deletion Comments [Optional]">
-                      </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-danger">Delete</button>
+                  <button type="submit" class="btn btn-danger">Permanently Delete</button>
                 </div>
               </form>
               </div>

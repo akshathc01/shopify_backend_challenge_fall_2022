@@ -58,9 +58,22 @@ const inventorySchema = {
  
 const Inventory = mongoose.model("Inventory", inventorySchema);
 
+app.get("/trash", function(req, res) {
+
+  Product.find({'deletion.deleted': true}, function(err, foundProducts){
+    if(err) {
+      console.log(err);
+    } else {
+      res.render("trash", {listTitle: "Deleted Inventory", productList: foundProducts});
+    }
+    
+  });
+
+});
+
 app.get("/", function(req, res) {
 
-  Product.find({}, function(err, foundProducts){
+  Product.find({'deletion.deleted': false}, function(err, foundProducts){
 
     if (foundProducts.length === 0) {
       Product.insertMany(defaultProducts, function(err){
@@ -72,7 +85,7 @@ app.get("/", function(req, res) {
       });
       res.redirect("/");
     } else {
-      // console.log(foundProducts)
+      console.log(foundProducts)
       res.render("home", {listTitle: "Inventory", productList: foundProducts});
     }
   });
@@ -140,7 +153,7 @@ app.post("/add", function(req, res){
       console.log("Successfully saved product to DB.");
     }
   });
-  res.redirect("/")
+  res.redirect("/");
 });
 
 app.post("/edit", function(req, res){
@@ -152,35 +165,81 @@ app.post("/edit", function(req, res){
   }}, {useFindAndModify: false},
   function(err, doc) {
     if (err) {
-      console.log(err)
+      console.log(err);
     } else {
-      console.log("Successfully updated product.")
-      res.redirect("/")
+      console.log("Successfully updated product.");
+      res.redirect("/");
+    }
+  });
+});
+
+app.post("/recover", function(req, res){
+  Product.findOneAndUpdate({_id: req.body.productId},  {$set: {
+    deletion: {
+      deleted: false, 
+      comment: ""
+    } 
+  }}, {useFindAndModify: false},
+  function(err, doc) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Successfully moved product to inventory.");
+      res.redirect("/");
     }
   });
 });
 
 app.post("/delete", function(req, res){
-  const checkedItemId = req.body.checkbox;
-  const listName = req.body.listName;
-
-  if (listName === "Today") {
-    Item.findByIdAndRemove(checkedItemId, function(err){
-      if (!err) {
-        console.log("Successfully deleted checked item.");
-        res.redirect("/");
-      }
-    });
-  } else {
-    List.findOneAndUpdate({name: listName}, {$pull: {items: {_id: checkedItemId}}}, function(err, foundList){
-      if (!err){
-        res.redirect("/" + listName);
-      }
-    });
-  }
-
-
+  Product.findOneAndUpdate({_id: req.body.productId},  {$set: {
+    deletion: {
+      deleted: true, 
+      comment: req.body.comment
+    } 
+  }}, {useFindAndModify: false},
+  function(err, doc) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Successfully moved product to trash.");
+      res.redirect("/");
+    }
+  });
 });
+
+app.post("/permdelete", function(req, res){
+  console.log(req.body);
+  Product.deleteOne({_id: req.body.productId}, function(err, doc) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Successfully deleted product.");
+      res.redirect("/trash");
+    }
+  });
+});
+
+// app.post("/delete", function(req, res){
+//   const checkedItemId = req.body.checkbox;
+//   const listName = req.body.listName;
+
+//   if (listName === "Today") {
+//     Item.findByIdAndRemove(checkedItemId, function(err){
+//       if (!err) {
+//         console.log("Successfully deleted checked item.");
+//         res.redirect("/");
+//       }
+//     });
+//   } else {
+//     List.findOneAndUpdate({name: listName}, {$pull: {items: {_id: checkedItemId}}}, function(err, foundList){
+//       if (!err){
+//         res.redirect("/" + listName);
+//       }
+//     });
+//   }
+
+
+// });
 
 app.get("/about", function(req, res){
   res.render("about");
