@@ -12,7 +12,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost:27017/inventoryDB", {useNewUrlParser: true});
+mongoose.connect("mongodb+srv://akshath:akshath@cluster0.3ppdj.mongodb.net/inventoryDB?retryWrites=true&w=majority/inventoryDB", {useNewUrlParser: true});
 
 const productsSchema = {
   name: String,
