@@ -1,150 +1,51 @@
 <%- include("header") -%>
-
-  <div class="box" id="heading">
-    <h1> <%= listTitle %> </h1>
+<h3>Trash</h3>
+<p>Hover over an item to recover or permanently delete it.</p>
+  <div class="menu-row">
+    <a href="/">  
+      <button type="button" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-fill" viewBox="0 2 16 16">
+          <path fill-rule="evenodd" d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6zm5-.793V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"></path>
+          <path fill-rule="evenodd" d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"></path>
+        </svg>
+        Home
+      </button>
+    </a>
   </div>
-  <a href="/">
-    <button>
-      home
-    </button>
-  </a>
-  <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProductModal">
-    Add Product
-  </button> -->
-  
-  <!-- Add Product Modal -->
-  <!-- <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          Please fill out the form to add a product to the inventory
-          <form id="addProductForm" action="/add" method="post">
-            <div class="form-group row">
-              <label for="addProductName" class="col-sm-2 col-form-label">Name</label>
-              <div class="col-sm-10">
-                <input name="productName" type="text" class="form-control" id="addProductName" placeholder="Name of the Product">
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="addProductStock" class="col-sm-2 col-form-label">Stock</label>
-              <div class="col-sm-10">
-                <input name="productStock" type="text" class="form-control" id="addProductStock" placeholder="Quantity of the Product">
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="addProductAisle" class="col-sm-2 col-form-label">Aisle</label>
-              <div class="col-sm-10">
-                <input name="productAisle" type="text" class="form-control" id="addProductAisle" placeholder="Aisle Number">
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="addProductLoc" class="col-sm-2 col-form-label">Location</label>
-              <div class="col-sm-10">
-                <input name="productLoc" type="text" class="form-control" id="addProductLoc" placeholder="Location of the Product">
-              </div>
-            </div>
-          
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save changes</button>
-        </div>
-      </form>
-      </div>
-    </div>
-  </div> -->
 
-  <table class="table">
+  <table class="table table table-bordered table-hover table-striped">
+    <thead>
     <tr>
-      <th>ID</th>
+      <th></th>
       <th>Name</th>
       <th>Stock</th>
       <th>Aisle</th>
       <th>Location</th>
       <th>Deletion Comments</th>
-      <th></th>
+      <th>ID</th>
       <th></th>
     </tr>
-    
+  </thead>
+    <% var count = 1 %>
     <%  productList.forEach(function(product){ %>
       <tr>
-        <td><%=product._id%></td>
+        <td><%=count%></td>
         <td><%=product.name%></td>
         <td><%=product.stock%></td>
         <td><%=product.aisle%></td>
         <td><%=product.location%></td>
         <td><%=product.deletion.comment%></td>
-        <!-- <td>
-          <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editProductModal_<%=product._id%>">
-            Edit Product
-          </button> -->
-          <!-- Edit Product Modal -->
-          <!-- <div class="modal fade" id="editProductModal_<%=product._id%>" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  Please edit the values and click on save
-                  <form action="/edit" method="post">
-                    <input name="productId" type="hidden" value="<%=product.id%>">
-                    <div class="form-group row">
-                      <label for="editProductName" class="col-sm-2 col-form-label">Name</label>
-                      <div class="col-sm-10">
-                        <input name="productName" type="text" class="form-control" id="editProductName" value="<%=product.name%>">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label for="editProductStock" class="col-sm-2 col-form-label">Stock</label>
-                      <div class="col-sm-10">
-                        <input name="productStock" type="text" class="form-control" id="editProductStock" value="<%=product.stock%>">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label for="editProductAisle" class="col-sm-2 col-form-label">Aisle</label>
-                      <div class="col-sm-10">
-                        <input name="productAisle" type="text" class="form-control" id="editProductAisle" value="<%=product.aisle%>">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label for="editProductLoc" class="col-sm-2 col-form-label">Location</label>
-                      <div class="col-sm-10">
-                        <input name="productLoc" type="text" class="form-control" id="editProductLoc" value="<%=product.location%>">
-                      </div>
-                    </div>
-                  
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-              </form>
-              </div>
-            </div>
-          </div>
-        </td> -->
+        <td><%=product._id%></td>
         <td>
           <form action="/recover" method="post">
             <input name="productId" type="hidden" value="<%=product.id%>">
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary showHover">
               Recover
             </button>
+            <button type="button" class="btn btn-danger showHover" data-toggle="modal" data-target="#deleteProductModal_<%=product._id%>">
+              Permanently Delete
+            </button>
           </form>
-        </td>
-        <td>
-          <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteProductModal_<%=product._id%>">
-            Permanently Delete
-          </button>
           <div class="modal fade" id="deleteProductModal_<%=product._id%>" tabindex="-1" role="dialog" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
@@ -169,6 +70,7 @@
           </div>
         </td>
       </tr>
+      <% count++ %>  
     <%  }) %>
   </table>
 
